@@ -1,11 +1,15 @@
-<script setup></script>
+<script setup>
+import CampaignTable from './components/CampaignTable.vue';
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="container">
+    <CampaignTable />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  width: 95%;
+}
+</style>
