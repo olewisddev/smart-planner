@@ -1,10 +1,10 @@
 <script setup>
-import CampaignTable from './components/CampaignTable.vue';
+import CampaignTablePanel from './components/CampaignTablePanel.vue';
 </script>
 
 <template>
   <div class="container">
-    <CampaignTable />
+    <CampaignTablePanel />
   </div>
 </template>
 

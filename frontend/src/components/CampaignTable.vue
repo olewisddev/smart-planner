@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-4">
+  <div class="container">
     <table class="table table-sm">
       <thead>
         <tr>
@@ -34,7 +34,6 @@
           <td colspan="9" class="invisible">No data</td>
         </tr>
 
-        <!-- Error Message -->
         <tr v-if="error" class="text-danger">
           <td colspan="10" class="text-center">Error loading data: {{ errorMessage }}</td>
         </tr>
@@ -44,6 +43,8 @@
 </template>
 
 <script>
+import { store } from '../store.js';
+
 export default {
   data() {
     return {
@@ -53,23 +54,38 @@ export default {
       errorMessage: ''
     };
   },
+  computed: {
+    selectedPlatform() {
+      return store.selectedPlatform;
+    }
+  },
+  watch: {
+    selectedPlatform(newPlatform) {
+      this.fetchCampaignData(newPlatform);
+    }
+  },
   mounted() {
-    this.fetchCampaignData();
+    this.fetchCampaignData(this.selectedPlatform);
   },
   methods: {
-    async fetchCampaignData() {
+    async fetchCampaignData(platform) {      
+      let url = `http://127.0.0.1:8000/api/clients/1289/campaigns`;
+      
+      if (platform != '') {
+        url += `?platform=${platform}`;
+      }
+
       try {
         this.loading = true;
         this.error = false;
 
-        const response = await fetch('http://127.0.0.1:8000/api/clients/1289/campaigns');
+        const response = await fetch(url);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-
         this.campaigns = data.campaigns;
 
         this.loading = false;
@@ -127,4 +143,3 @@ td.invisible {
   visibility: hidden;
 }
 </style>
-
