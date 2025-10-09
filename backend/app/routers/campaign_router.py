@@ -38,3 +38,28 @@ def get_campaigns(client_id: int, buy_type: Optional[str] = None,
             for campaign in campaigns
         ]
     }
+    
+    
+@campaign_router.get("/api/clients/{client_id}/campaigns/costs")
+def get_campaigns(client_id: int) -> dict:
+    """
+    Get campaign costs
+    """
+    
+    # Add client filtering here.    
+    
+    campaigns = get_campaigns_for_client()
+    
+    if not campaigns:
+        raise HTTPException(status_code=404, detail="No campaigns found matching the criteria")
+    
+    return {
+        "client": "Brewtopia Coffee House", 
+        "campaigns": [
+            {
+                "campaign-name": campaign.campaign_name,
+                "cost-value": int(campaign.cost.removeprefix("PHP ").replace(",", ""))
+            }
+            for campaign in campaigns
+        ]
+    }
