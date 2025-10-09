@@ -125,18 +125,16 @@ export default {
 
 <style scoped>
 div.container {
-  border: 1px solid #023020;
   padding: 0;
+  width: 100%;
 }
 
 table {
-  font-size: 0.85rem;
   margin: 0;
 }
 
 th {
-  background-color: #023020;
-  color: white;
+  background-color: #3EBB9E;
 }
 
 td.invisible {

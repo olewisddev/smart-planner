@@ -51,7 +51,6 @@ export default {
   display: flex;
   flex-direction: column;
   row-gap: 10px;
-  margin-top: 15px;
 }
 
 .form-select-sm {

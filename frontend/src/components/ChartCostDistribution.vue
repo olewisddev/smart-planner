@@ -1,7 +1,7 @@
 <template>
-  <div class="cost-distribution-container">
-    <label>Cost Distribution</label>
-    <div><canvas ref="myChart"></canvas></div>
+  <div class="chart-container">
+    <h2><i class="bi bi-bar-chart-line"></i>&nbsp;Cost Distribution</h2>
+    <div class="canvas-container"><canvas ref="myChart"></canvas></div>
   </div>
 </template>
 
@@ -70,7 +70,7 @@ export default {
                 },
               },
             },
-          },
+          }
         },
       });
     },
@@ -107,10 +107,10 @@ export default {
 
 
 <style scoped>
-.cost-distribution-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 5px;
+.canvas-container {
+  flex-grow: 1; /* Take up remaining space */
+  display: flex; /* Use Flexbox in this container */
+  justify-content: center; /* Center the canvas horizontally */
+  align-items: center; /* Center the canvas vertically */
 }
 </style>

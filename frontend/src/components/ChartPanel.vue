@@ -24,10 +24,13 @@ export default {
 </script>
 
 <style scoped>
-.panel-container {
-  width: 50%;
-  padding: 15px;
-  border: 1px solid #000000;
-  margin: 10px 0;
+.panel-container { height: 100%; }
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start; 
 }
+
 </style>

@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <canvas ref="barCanvas"></canvas>
+  <div class="chart-container">
+    <h2><i class="bi bi-bar-chart-line"></i>&nbsp;Mean CPU by Platform</h2>
+    <div class="canvas-container"><canvas ref="barCanvas"></canvas></div>
   </div>
 </template>
 
@@ -63,10 +64,6 @@ export default {
         options: {
           responsive: true,
           plugins: {
-            title: {
-              display: true,
-              text: 'Mean CPU by Platform'
-            },
             legend: {
               display: false
             }
@@ -79,7 +76,7 @@ export default {
                 text: 'CPU'
               }
             }
-          }
+          },
         }
       });
     }
@@ -93,4 +90,10 @@ export default {
 </script>
 
 <style scoped>
+.canvas-container {
+  flex-grow: 1; /* Take up remaining space */
+  display: flex; /* Use Flexbox in this container */
+  justify-content: center; /* Center the canvas horizontally */
+  align-items: center; /* Center the canvas vertically */
+}
 </style>
