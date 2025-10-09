@@ -1,6 +1,10 @@
 from typing import List, Optional
 from models.campaign_model import Campaign
 
+from collections import defaultdict
+import re
+from statistics import mean, median
+
 
 fake_campaigns_db = [
     Campaign(
@@ -121,3 +125,33 @@ def get_campaigns_for_client(platform: Optional[str] = None, objective: Optional
            (objective is None or campaign.objective.lower() == objective.lower()) and
            (buy_type is None or campaign.buy_type.lower() == buy_type.lower())
     ]
+
+
+def extract_cpu_value(cpu_str: str) -> float:
+    match = re.search(r"PHP (\d+(\.\d+)?)", cpu_str)
+    return float(match.group(1)) if match else 0.0
+
+
+def calculate_cpu_stats(campaigns: List[Campaign]) -> dict[str, float]:
+    cpu_values = [extract_cpu_value(campaign.cpu) for campaign in campaigns]
+    return {
+        "mean_cpu": mean(cpu_values),
+        "median_cpu": median(cpu_values)
+    }
+
+
+def get_cpu_stats_by_platform() -> dict[str, dict]:
+    campaigns = get_campaigns_for_client()
+    platform_groups = defaultdict(list)
+    
+    # Group campaigns by platform
+    for campaign in campaigns:
+        platform_groups[campaign.platform].append(campaign)
+    
+    # Calculate stats for each platform
+    platform_stats = {}
+    for platform, campaigns in platform_groups.items():
+        stats = calculate_cpu_stats(campaigns)
+        platform_stats[platform] = stats
+    
+    return platform_stats

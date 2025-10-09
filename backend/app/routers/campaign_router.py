@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from typing import Optional
 from models.campaign_model import Campaign
-from services.campaign_service import get_campaigns_for_client
+import services.campaign_service as campaign_service
 
 
 campaign_router = APIRouter()
@@ -15,7 +15,7 @@ def get_campaigns(client_id: int, buy_type: Optional[str] = None,
     
     # Add client filtering here.    
     
-    campaigns = get_campaigns_for_client(platform=platform, objective=objective, buy_type=buy_type)
+    campaigns = campaign_service.get_campaigns_for_client(platform=platform, objective=objective, buy_type=buy_type)
     
     if not campaigns:
         raise HTTPException(status_code=404, detail="No campaigns found matching the criteria")
@@ -48,7 +48,7 @@ def get_campaigns(client_id: int) -> dict:
     
     # Add client filtering here.    
     
-    campaigns = get_campaigns_for_client()
+    campaigns = campaign_service.get_campaigns_for_client()
     
     if not campaigns:
         raise HTTPException(status_code=404, detail="No campaigns found matching the criteria")
@@ -63,3 +63,9 @@ def get_campaigns(client_id: int) -> dict:
             for campaign in campaigns
         ]
     }
+    
+    
+@campaign_router.get("/api/clients/{client_id}/campaigns/stats/cpu-per-platform")
+def get_cpu_stats():
+    stats = campaign_service.get_cpu_stats_by_platform()
+    return stats
