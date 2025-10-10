@@ -127,6 +127,13 @@ def get_campaigns_for_client(platform: Optional[str] = None, objective: Optional
     ]
 
 
+def add_campaigns(campaign_list: list[Campaign]):
+    """
+    Append list of new campaigns to datastore.
+    """
+    fake_campaigns_db.extend(campaign_list)
+
+
 def extract_cpu_value(cpu_str: str) -> float:
     match = re.search(r"PHP (\d+(\.\d+)?)", cpu_str)
     return float(match.group(1)) if match else 0.0
