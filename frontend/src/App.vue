@@ -1,6 +1,7 @@
 <script setup>
 import CampaignTablePanel from './components/CampaignTablePanel.vue';
 import ChartPanel from './components/ChartPanel.vue';
+import InsightsPanel from './components/InsightsPanel.vue';
 </script>
 
 <template>
@@ -14,11 +15,7 @@ import ChartPanel from './components/ChartPanel.vue';
     </div>
 
     <div class="card bottom-right-card shadow-lg">
-      <h2>Insights</h2>
-      <ul>
-        <li>Lorem ipsum dolor</li>
-        <li>Sit amet</li>
-      </ul>
+      <InsightsPanel />
     </div>
   </div>
 </template>
