@@ -155,3 +155,14 @@ def get_cpu_stats_by_platform() -> dict[str, dict]:
         platform_stats[platform] = stats
     
     return platform_stats
+    
+    
+def get_campaign_cost_insights() -> dict:
+    campaigns_costs = {campaign.campaign_name: float(re.sub(r'[^\d.]', '', campaign.cost)) for campaign in fake_campaigns_db}
+        
+    return {
+        "total_cost": f"{sum(campaigns_costs.values()):,.2f}",
+        "max_cost_percentage": f"{((max(campaigns_costs.values()) / sum(campaigns_costs.values())) * 100):.2f}%",
+        "max_cost_campaign": max(campaigns_costs, key=campaigns_costs.get),
+        "mean_cost": f"{mean(campaigns_costs.values()):,.2f}"
+    }

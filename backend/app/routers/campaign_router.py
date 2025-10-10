@@ -69,3 +69,17 @@ def get_campaigns(client_id: int) -> dict:
 def get_cpu_stats():
     stats = campaign_service.get_cpu_stats_by_platform()
     return stats
+    
+    
+@campaign_router.get("/api/clients/{client_id}/campaigns/insights")
+def get_client_campaign_insights():
+    insight_values = campaign_service.get_campaign_cost_insights()
+    
+    return {
+        "client":  "Brewtopia Coffee House",
+        "insights": [
+            f"Total running cost of campaigns is {insight_values["total_cost"]}.",
+            f"Campaign with highest cost is {insight_values["max_cost_campaign"]}, {insight_values["max_cost_percentage"]} of total.",
+            f"Average cost of each campaign at {insight_values["mean_cost"]}."
+        ]
+    }
