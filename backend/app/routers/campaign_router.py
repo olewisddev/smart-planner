@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile
 from typing import Optional
 from models.campaign_model import Campaign
 import services.campaign_service as campaign_service
+from io import StringIO
+import csv
 
 
 campaign_router = APIRouter()
@@ -39,6 +41,34 @@ def get_campaigns(client_id: int, buy_type: Optional[str] = None,
         ]
     }
     
+    
+@campaign_router.post("/api/clients/{client_id}/campaigns")
+async def create_upload_file(file: UploadFile):
+    contents = await file.read()
+
+    string_io = StringIO(contents.decode("utf-8"))
+    csv_reader = csv.DictReader(string_io)
+    
+    campaigns = []
+    for row in csv_reader:
+        campaign = Campaign(
+            client=row["client"],
+            platform=row["platform"],
+            buy_type=row["buy-type"],
+            objective=row["objective"],
+            placement=row["placement"],
+            cpu=row["cpu"],
+            est_kpi=row["est-kpi"],
+            cost=row["cost"],
+            campaign_name=row["campaign-name"],
+            start=row["start"],
+            end=row["end"]
+        )
+        campaigns.append(campaign)
+
+    campaign_service.add_campaigns(campaigns)
+    return {"message": f"Successfully uploaded {len(campaigns)} campaigns."}
+        
     
 @campaign_router.get("/api/clients/{client_id}/campaigns/costs")
 def get_campaigns(client_id: int) -> dict:
