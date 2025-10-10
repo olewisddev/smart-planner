@@ -57,11 +57,17 @@ export default {
   computed: {
     selectedPlatform() {
       return store.selectedPlatform;
+    },
+    fileUploaded() {
+      return store.fileUploaded;
     }
   },
   watch: {
     selectedPlatform(newPlatform) {
       this.fetchCampaignData(newPlatform);
+    },
+    fileUploaded() {
+      this.fetchCampaignData(store.selectedPlatform);
     }
   },
   mounted() {
