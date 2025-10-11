@@ -139,7 +139,10 @@ def extract_cpu_value(cpu_str: str) -> float:
     return float(match.group(1)) if match else 0.0
 
 
-def calculate_cpu_stats(campaigns: List[Campaign]) -> dict[str, float]:
+def calculate_cpu_stats(campaigns: list[Campaign] = None) -> dict[str, float]:
+    if campaigns is None:
+        campaigns = fake_campaigns_db
+    
     cpu_values = [extract_cpu_value(campaign.cpu) for campaign in campaigns]
     return {
         "mean_cpu": mean(cpu_values),
@@ -172,4 +175,18 @@ def get_campaign_cost_insights() -> dict:
         "max_cost_percentage": f"{((max(campaigns_costs.values()) / sum(campaigns_costs.values())) * 100):.2f}%",
         "max_cost_campaign": max(campaigns_costs, key=campaigns_costs.get),
         "mean_cost": f"{mean(campaigns_costs.values()):,.2f}"
+    }
+    
+    
+def get_platform_cpu_insights(platform: str) -> dict:
+    platform_campaigns = get_campaigns_for_client(platform)
+    
+    platform_max_cpu = max(platform_campaigns, key=lambda m: extract_cpu_value(m.cpu))
+    mean_cpu_all = calculate_cpu_stats().get("mean_cpu")
+    max_cpu_percent_diff = (extract_cpu_value(platform_max_cpu.cpu) - mean_cpu_all) / mean_cpu_all
+    
+    return {
+        "total_cost": f"{sum([float(re.sub(r'[^\d.]', '', campaign.cost)) for campaign in platform_campaigns]):,.2f}",
+        "max_cpu_campaign": platform_max_cpu.campaign_name,
+        "max_cpu_percent_diff": f"{max_cpu_percent_diff:,.2f}"
     }
