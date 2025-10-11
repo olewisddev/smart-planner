@@ -113,3 +113,21 @@ def get_client_campaign_insights():
             f"Average cost of each campaign at {insight_values["mean_cost"]}."
         ]
     }
+
+@campaign_router.get("/api/clients/{client_id}/campaigns/insights/platforms/{platform}")
+def get_platform_cpu_insights(platform: str):
+    insight_values = campaign_service.get_platform_cpu_insights(platform)
+    
+    if insight_values["max_cpu_percent_diff"][0] == "-":
+        relative_diff = f"{insight_values["max_cpu_percent_diff"][1:]}% lower"
+    else:
+        relative_diff = f"{insight_values["max_cpu_percent_diff"]}% higher"
+        
+    
+    return {
+        "client": "Brewtopia Coffee House",
+        "insights": [
+            f"Total running cost of {platform.capitalize()} campaigns at {insight_values["total_cost"]}.",
+            f"{platform.capitalize()} campaign with highest CPU is {insight_values["max_cpu_campaign"]}, {relative_diff} compared to average CPU of all campaigns.",
+        ]
+    }
