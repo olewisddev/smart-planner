@@ -12,6 +12,17 @@
 import { store } from '../store.js';
 
 export default {
+  watch: {
+    fileUploaded() {
+      store.selectedPlatform = '',
+      store.selectedObjective = ''
+    }
+  },
+  computed: {
+    fileUploaded() {
+      return store.fileUploaded;
+    }
+  },  
   methods: {
     triggerFileInput() {
       // Simulate input click
