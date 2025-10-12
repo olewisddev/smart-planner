@@ -166,6 +166,22 @@ def get_cpu_stats_by_platform() -> dict[str, dict]:
     
     return platform_stats
     
+def get_cpu_stats_by_objective() -> dict[str, dict]:
+    campaigns = get_campaigns_for_client()
+    objective_groups = defaultdict(list)
+    
+    # Group campaigns by objective
+    for campaign in campaigns:
+        objective_groups[campaign.objective].append(campaign)
+    
+    # Calculate stats for each objective
+    objective_stats = {}
+    for objective, campaigns in objective_groups.items():
+        stats = calculate_cpu_stats(campaigns)
+        objective_stats[objective] = stats
+    
+    return objective_stats
+    
     
 def get_campaign_cost_insights() -> dict:
     campaigns_costs = {campaign.campaign_name: float(re.sub(r'[^\d.]', '', campaign.cost)) for campaign in fake_campaigns_db}
@@ -190,3 +206,18 @@ def get_platform_cpu_insights(platform: str) -> dict:
         "max_cpu_campaign": platform_max_cpu.campaign_name,
         "max_cpu_percent_diff": f"{max_cpu_percent_diff:,.2f}"
     }
+        
+    
+def get_objective_cpu_insights(objective: str) -> dict:
+    objective_campaigns = get_campaigns_for_client(None, objective)
+    
+    objective_max_cpu = max(objective_campaigns, key=lambda m: extract_cpu_value(m.cpu))
+    mean_cpu_all = calculate_cpu_stats().get("mean_cpu")
+    max_cpu_percent_diff = (extract_cpu_value(objective_max_cpu.cpu) - mean_cpu_all) / mean_cpu_all
+
+    return {
+        "total_cost": f"{sum([float(re.sub(r'[^\d.]', '', campaign.cost)) for campaign in objective_campaigns]):,.2f}",
+        "max_cpu_campaign": objective_max_cpu.campaign_name,
+        "max_cpu_percent_diff": f"{max_cpu_percent_diff:,.2f}"
+    }
+      

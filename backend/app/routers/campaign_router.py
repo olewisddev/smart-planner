@@ -19,8 +19,6 @@ def get_campaigns(client_id: int, buy_type: Optional[str] = None,
     
     campaigns = campaign_service.get_campaigns_for_client(platform=platform, objective=objective, buy_type=buy_type)
     
-    if not campaigns:
-        raise HTTPException(status_code=404, detail="No campaigns found matching the criteria")
     
     return {
         "client": "Brewtopia Coffee House", 
@@ -101,6 +99,12 @@ def get_cpu_stats():
     return stats
     
     
+@campaign_router.get("/api/clients/{client_id}/campaigns/stats/cpu-per-objective")
+def get_cpu_stats():
+    stats = campaign_service.get_cpu_stats_by_objective()
+    return stats
+    
+    
 @campaign_router.get("/api/clients/{client_id}/campaigns/insights")
 def get_client_campaign_insights():
     insight_values = campaign_service.get_campaign_cost_insights()
@@ -131,3 +135,22 @@ def get_platform_cpu_insights(platform: str):
             f"{platform.capitalize()} campaign with highest CPU is {insight_values["max_cpu_campaign"]}, {relative_diff} compared to average CPU of all campaigns.",
         ]
     }
+    
+    
+@campaign_router.get("/api/clients/{client_id}/campaigns/insights/objectives/{objective}")
+def get_objective_cpu_insights(objective: str):
+    insight_values = campaign_service.get_objective_cpu_insights(objective)
+    
+    if insight_values["max_cpu_percent_diff"][0] == "-":
+        relative_diff = f"{insight_values["max_cpu_percent_diff"][1:]}% lower"
+    else:
+        relative_diff = f"{insight_values["max_cpu_percent_diff"]}% higher"
+        
+    return {
+        "client": "Brewtopia Coffee House",
+        "insights": [
+            f"Total running cost of campaigns for {objective.lower()} at {insight_values["total_cost"]}.",
+            f"Campaign for {objective.lower()} with highest CPU is {insight_values["max_cpu_campaign"]}, {relative_diff} compared to average CPU of all campaigns.",
+        ]
+    }
+    
