@@ -1,17 +1,29 @@
 <template>
   <div class="panel-container">
     <div class="controls-container">
-      <select 
-        class="form-select form-select-sm platform-select" 
-        v-model="selectedPlatform"
-        @change="updateSelectedPlatform"
-      >    
-        <option value="" selected>Select platform...</option>
-        <option value="facebook">Facebook</option>
-        <option value="instagram">Instagram</option>
-        <option value="youtube">Youtube</option>
-        <option value="tiktok">Tiktok</option>
-      </select>
+      <div class="filters-container">
+        <select 
+          class="form-select form-select-sm platform-select" 
+          v-model="selectedPlatform"
+          @change="updateSelectedPlatform"
+        >    
+          <option value="" selected>Select platform...</option>
+          <option value="facebook">Facebook</option>
+          <option value="instagram">Instagram</option>
+          <option value="youtube">Youtube</option>
+          <option value="tiktok">Tiktok</option>
+        </select>
+        <select class="form-select form-select-sm" v-model="selectedObjective">
+          <option value="" selected>Select objective...</option>
+          <option value="video views">Video views</option>
+          <option value="brand awareness">Brand awareness</option>
+          <option value="engagement">Engagement</option>
+          <option value="lead generation">Lead generation</option>
+        </select>
+        <button type="button" class="btn btn-outline-secondary btn-sm" @click="handleClearClicked">
+          Clear
+        </button>
+      </div>
       <UploadButton />
     </div>
     <CampaignTable />
@@ -38,6 +50,14 @@ export default {
       set(value) {
         store.selectedPlatform = value;
       }
+    },
+    selectedObjective: {
+      get() { 
+        return store.selectedObjective; 
+      },
+      set(value) { 
+        return store.selectedObjective = value; 
+      }
     }
   },
   methods: {
@@ -45,6 +65,10 @@ export default {
       if (this.selectedPlatform === '') {
         store.selectedPlatform = '';
       }
+    },
+    handleClearClicked() {
+      store.selectedPlatform = '';
+      store.selectedObjective = '';
     }
   }
 }
@@ -59,11 +83,17 @@ export default {
 }
 
 .form-select-sm {
-  width: 25%;
+  width: 20%;
 }
 
 .controls-container {
   display: flex;
   justify-content: space-between;
+}
+
+.filters-container {
+  display: flex;
+  column-gap: 0.5rem;
+  flex-grow: 1;
 }
 </style>

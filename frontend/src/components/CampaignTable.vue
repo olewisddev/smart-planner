@@ -58,27 +58,38 @@ export default {
     selectedPlatform() {
       return store.selectedPlatform;
     },
+    selectedObjective() {
+      return store.selectedObjective;
+    },
     fileUploaded() {
       return store.fileUploaded;
     }
   },
   watch: {
     selectedPlatform(newPlatform) {
-      this.fetchCampaignData(newPlatform);
+      this.fetchCampaignData(newPlatform, store.selectedObjective);
     },
-    fileUploaded() {
-      this.fetchCampaignData(store.selectedPlatform);
+    selectedObjective(newObjective) {
+      this.fetchCampaignData(store.selectedPlatform, newObjective);
+    },
+    fileUploaded() {      
+      this.fetchCampaignData(store.selectedPlatform, store.selectedObjective);
     }
   },
   mounted() {
-    this.fetchCampaignData(this.selectedPlatform);
+    this.fetchCampaignData(this.selectedPlatform, this.selectedObjective);
   },
   methods: {
-    async fetchCampaignData(platform) {      
+    async fetchCampaignData(platform, objective) {      
       let url = `http://127.0.0.1:8000/api/clients/1289/campaigns`;
       
       if (platform != '') {
         url += `?platform=${platform}`;
+      }
+      
+      if (objective != '') {
+        url += platform == '' ? "?" : "&" 
+        url += `objective=${objective}`;
       }
 
       try {
