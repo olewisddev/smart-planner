@@ -22,19 +22,21 @@ import InsightsPanel from './components/InsightsPanel.vue';
 
 <style>
 html {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 body {
   font-size: 1rem;
-  background-color: #0A3C30;
+  background-color: #005A9C;
 }
 
 h2 {
-  font-size: 1.65rem;
+  font-size: 1.40rem;
   font-weight: bold; 
-  color: #0A3C30; 
+  color: #0E3386; 
 }
+
+li { font-size: 1.20rem; }
 
 .app-container {
   display: grid;

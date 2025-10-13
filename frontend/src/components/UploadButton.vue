@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button class="btn btn-primary btn-sm" @click="triggerFileInput">
+    <button class="btn btn-primary" @click="triggerFileInput">
       <i class="bi bi-upload"></i> Upload CSV
     </button> 
     <!-- Hidden input element --> 
