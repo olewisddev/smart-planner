@@ -41,5 +41,4 @@ export default {
 </script>
 
 <style scoped>
-li { font-size: 1.5rem; }
 </style>

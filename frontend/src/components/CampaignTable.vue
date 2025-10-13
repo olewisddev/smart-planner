@@ -157,11 +157,14 @@ div.container {
 
 table {
   margin: 0;
+  font-size: 0.85rem;
 }
 
 th {
-  background-color: #3EBB9E;
+  background-color: #0E3386;
+  color: white;
 }
+
 
 td.invisible {
   visibility: hidden;

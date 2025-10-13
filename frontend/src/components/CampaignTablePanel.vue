@@ -1,9 +1,10 @@
 <template>
   <div class="panel-container">
+    <h2>Brewtopia Coffee House</h2>
     <div class="controls-container">
       <div class="filters-container">
         <select 
-          class="form-select form-select-sm platform-select" 
+          class="form-select platform-select" 
           v-model="selectedPlatform"
           @change="updateSelectedPlatform"
         >    
@@ -13,14 +14,14 @@
           <option value="youtube">Youtube</option>
           <option value="tiktok">Tiktok</option>
         </select>
-        <select class="form-select form-select-sm" v-model="selectedObjective">
+        <select class="form-select" v-model="selectedObjective">
           <option value="" selected>Select objective...</option>
           <option value="video views">Video views</option>
           <option value="brand awareness">Brand awareness</option>
           <option value="engagement">Engagement</option>
           <option value="lead generation">Lead generation</option>
         </select>
-        <button type="button" class="btn btn-outline-secondary btn-sm" @click="handleClearClicked">
+        <button type="button" class="btn btn-outline-secondary" @click="handleClearClicked">
           Clear
         </button>
       </div>
@@ -82,7 +83,7 @@ export default {
   row-gap: 10px;
 }
 
-.form-select-sm {
+.form-select {
   width: 20%;
 }
 
