@@ -1,14 +1,22 @@
 <template>
-  <ul>
-    <li v-for="(insight, index) in insights" :key="index">{{ insight }}</li>
-  </ul>
+  <div class="container">
+    <LoadingTransition :loading="loading" />
+
+    <transition-group name="fade" tag="ul">
+      <li v-for="(insight, index) in insights" :key="index">{{ insight }}</li>
+    </transition-group>
+  </div>
 </template>
 
 <script>
+import LoadingTransition from './common/LoadingTransition.vue';
+
 export default {
+  components: { LoadingTransition },
   data() {
     return {
-      insights: []
+      insights: [],
+      loading: false
     };
   },
   mounted() {
@@ -17,13 +25,15 @@ export default {
   methods: {
     async fetchCampaignData() {
       try {
+        this.loading = true;
         const response = await fetch('http://127.0.0.1:8000/api/clients/1298/campaigns/insights');
         const data = await response.json();
         
-        // Store the insights array directly
         this.insights = data.insights || [];
+        this.loading = false;
       } catch (error) {
         console.error('Error fetching campaign data:', error);
+        this.loading = false;
       }
     }
   }
