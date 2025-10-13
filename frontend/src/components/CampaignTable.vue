@@ -13,8 +13,7 @@
             <th scope="col">CPU</th>
             <th scope="col">Estimated KPI</th>
             <th scope="col">Cost</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">End Date</th>
+            <th scope="col">Duration</th>
           </tr>
         </thead>
         <tbody>
@@ -27,11 +26,10 @@
             <td>{{ campaign.objective }}</td>
             <td>{{ campaign['buy-type'] }}</td>
             <td>{{ campaign.placement }}</td>
-            <td>{{ campaign.cpu }}</td>
+            <td>{{ formatCurrency(campaign.cpu) }}</td>
             <td>{{ campaign['est-kpi'] }}</td>
-            <td>{{ campaign.cost }}</td>
-            <td>{{ campaign.start }}</td>
-            <td>{{ campaign.end }}</td>
+            <td>{{ formatCurrency(campaign.cost) }}</td>
+            <td>{{ formatDuration(campaign.start, campaign.end) }}</td>
           </tr>
 
           <tr v-if="campaigns.length < 10" v-for="n in 10 - campaigns.length" :key="'empty-' + n">
@@ -141,6 +139,37 @@ export default {
         default:
           return '';
       }
+    },
+    
+    // Replace 'PHP' with the peso symbol
+    formatCurrency(value) {      
+      return value.replace(/^PHP/, '₱');
+    },
+    
+    // Replace date start to end to human readable
+    formatDuration(dateStart, dateEnd) {
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+    
+      const startYear = dateStart.substring(0, 4);
+      const startMonth = dateStart.substring(5, 7);
+      const startDay = parseInt(dateStart.substring(8, 10), 10);
+    
+      const endYear = dateEnd.substring(0, 4);
+      const endMonth = dateEnd.substring(5, 7);
+      const endDay = parseInt(dateEnd.substring(8, 10), 10);
+    
+      if (startYear === endYear && startMonth === endMonth) {
+        return `${startDay} to ${endDay} ${monthNames[parseInt(startMonth, 10) - 1]} ${startYear}`;
+      } 
+      
+      if (startYear === endYear) {
+        return `${startDay} ${monthNames[parseInt(startMonth, 10) - 1].slice(0, 3)}. to ${endDay} ${monthNames[parseInt(endMonth, 10) - 1].slice(0, 3)}. ${startYear}`;
+      } 
+      
+      return `${startDay} ${monthNames[parseInt(startMonth, 10) - 1].slice(0, 3)}. ${startYear} to ${endDay} ${monthNames[parseInt(endMonth, 10) - 1].slice(0, 3)}. ${endYear}`;
     }
   },
   components: {
