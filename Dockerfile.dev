@@ -1,0 +1,28 @@
+FROM alpine:latest
+
+RUN apk update \ 
+    && apk add --no-cache \
+    python3 \
+    py3-virtualenv \
+    nodejs \
+    npm \
+    bash \
+    && rm -rf /var/cache/apk/*
+
+RUN python3 -m venv /venv
+RUN /venv/bin/pip install uv
+
+WORKDIR /app
+
+COPY backend/ ./backend/
+COPY frontend/ ./frontend/
+
+WORKDIR /app/frontend
+RUN npm install
+
+EXPOSE 8000 5000
+
+COPY start-dev.sh /app/start-dev.sh
+RUN chmod +x /app/start-dev.sh
+
+CMD ["/app/start-dev.sh"]
