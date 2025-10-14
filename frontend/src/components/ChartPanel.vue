@@ -1,7 +1,7 @@
 <template>
   <div class="panel-container">
     <ChartCostDistribution v-if="showChart === 'ChartCostDistribution'" />
-    <ChartMeanCPU v-if="showChart === 'ChartMeanCPU'" />
+    <ChartPlatformCPU v-if="showChart === 'ChartPlatformCPU'" />
     <ChartObjectiveCPU v-if="showChart === 'ChartObjectiveCPU'" />
   </div>
 </template>
@@ -9,14 +9,14 @@
 <script>
 import { store } from '../store.js';
 import ChartCostDistribution from './ChartCostDistribution.vue';
-import ChartMeanCPU from './ChartMeanCPU.vue';
+import ChartPlatformCPU from './ChartPlatformCPU.vue';
 import ChartObjectiveCPU from './ChartObjectiveCPU.vue';
 
 export default {
   name: 'ChartPanel',
   components: { 
     ChartCostDistribution,
-    ChartMeanCPU,
+    ChartPlatformCPU,
     ChartObjectiveCPU
   },
   data() {
@@ -51,7 +51,7 @@ export default {
       if (platform && objective) return;
 
       if (platform && !objective) {
-        this.showChart = 'ChartMeanCPU';
+        this.showChart = 'ChartPlatformCPU';
       } else if (!platform && objective) {
         this.showChart = 'ChartObjectiveCPU';
       } else {
