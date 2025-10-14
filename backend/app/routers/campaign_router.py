@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile, Query
 from typing import Optional
 from models.campaign_model import Campaign
 import services.campaign_service as campaign_service
@@ -92,17 +92,17 @@ def get_campaigns(client_id: int) -> dict:
         ]
     }
     
-    
-@campaign_router.get("/api/clients/{client_id}/campaigns/stats/cpu-per-platform")
-def get_cpu_stats():
-    stats = campaign_service.get_cpu_stats_by_platform()
-    return stats
-    
-    
-@campaign_router.get("/api/clients/{client_id}/campaigns/stats/cpu-per-objective")
-def get_cpu_stats():
-    stats = campaign_service.get_cpu_stats_by_objective()
-    return stats
+
+@campaign_router.get("/api/clients/{client_id}/metrics/cpu")
+async def get_cpu_metrics(client_id: str, group_by: str | None = Query(None, alias="group-by")):
+    """Get mean and median values of each CPU type for all, each platform, or each objective."""  
+    if group_by and group_by.strip().lower() == "platform":
+        return campaign_service.get_cpu_metrics_by_platform()
+        
+    if group_by and group_by.strip().lower() == "objective":
+        return campaign_service.get_cpu_metrics_by_objective()
+        
+    return campaign_service.get_cpu_metrics()
     
     
 @campaign_router.get("/api/clients/{client_id}/campaigns/insights")

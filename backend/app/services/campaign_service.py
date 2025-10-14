@@ -137,6 +137,28 @@ def add_campaigns(campaign_list: list[Campaign]):
 def extract_cpu_value(cpu_str: str) -> float:
     match = re.search(r"PHP (\d+(\.\d+)?)", cpu_str)
     return float(match.group(1)) if match else 0.0
+    
+
+def get_cpu_metrics():
+    """Get mean and median of each CPU type for all campaigns."""
+    campaigns = get_campaigns_for_client()
+    metrics_groups = defaultdict(list)
+    
+    for campaign in campaigns:
+        cpu_value = float(campaign.cpu.split()[1].replace(",", ""))
+        cpu_type = campaign.cpu.split()[-1].replace("(", "").replace(")", "").lower()
+
+        metrics_groups[cpu_type].append(cpu_value)
+
+    overall_metrics = {
+        metric: {
+            "mean": mean(values),
+            "median": median(values)
+        }
+        for metric, values in metrics_groups.items() if values
+    }
+    
+    return overall_metrics
 
 
 def calculate_cpu_stats(campaigns: list[Campaign] = None) -> dict[str, float]:
@@ -150,38 +172,65 @@ def calculate_cpu_stats(campaigns: list[Campaign] = None) -> dict[str, float]:
     }
 
 
-def get_cpu_stats_by_platform() -> dict[str, dict]:
+def get_cpu_metrics_by_platform():
+    """For each platform, get mean and median of each CPU type."""
     campaigns = get_campaigns_for_client()
-    platform_groups = defaultdict(list)
+    platforms = defaultdict(list)
     
     # Group campaigns by platform
     for campaign in campaigns:
-        platform_groups[campaign.platform].append(campaign)
+        platforms[campaign.platform.lower()].append(campaign)
     
-    # Calculate stats for each platform
-    platform_stats = {}
-    for platform, campaigns in platform_groups.items():
-        stats = calculate_cpu_stats(campaigns)
-        platform_stats[platform] = stats
-    
-    return platform_stats
-    
-def get_cpu_stats_by_objective() -> dict[str, dict]:
+    platform_groups = {}
+    for platform, campaigns in platforms.items():
+        metrics_groups = defaultdict(list)
+        
+        for campaign in campaigns:
+            cpu_value = float(campaign.cpu.split()[1].replace(",", ""))
+            cpu_type = campaign.cpu.split()[-1].replace("(", "").replace(")", "").lower()
+
+            metrics_groups[cpu_type].append(cpu_value)
+
+        platform_groups[platform] = {
+            metric: {
+                "mean": mean(values),
+                "median": median(values)
+            }
+            for metric, values in metrics_groups.items() if values
+        }
+            
+    return platform_groups
+
+
+def get_cpu_metrics_by_objective():
+    """For each objective, get mean and median of each CPU type."""
     campaigns = get_campaigns_for_client()
-    objective_groups = defaultdict(list)
+    objectives = defaultdict(list)
     
     # Group campaigns by objective
     for campaign in campaigns:
-        objective_groups[campaign.objective].append(campaign)
-    
-    # Calculate stats for each objective
-    objective_stats = {}
-    for objective, campaigns in objective_groups.items():
-        stats = calculate_cpu_stats(campaigns)
-        objective_stats[objective] = stats
-    
-    return objective_stats
-    
+        objectives[campaign.objective.lower()].append(campaign)
+        
+    objective_groups = {}
+    for objective, campaigns in objectives.items():
+        metrics_groups = defaultdict(list)
+        
+        for campaign in campaigns:
+            cpu_value = float(campaign.cpu.split()[1].replace(",", ""))
+            cpu_type = campaign.cpu.split()[-1].replace("(", "").replace(")", "").lower()
+
+            metrics_groups[cpu_type].append(cpu_value)
+
+        objective_groups[objective] = {
+            metric: {
+                "mean": mean(values),
+                "median": median(values)
+            }
+            for metric, values in metrics_groups.items() if values
+        }
+            
+    return objective_groups
+  
     
 def get_campaign_cost_insights() -> dict:
     campaigns_costs = {campaign.campaign_name: float(re.sub(r'[^\d.]', '', campaign.cost)) for campaign in fake_campaigns_db}

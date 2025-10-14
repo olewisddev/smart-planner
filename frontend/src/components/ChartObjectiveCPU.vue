@@ -11,29 +11,37 @@ export default {
   data() {
     return {
       chart: null,
-      data: [],
-      labels: [],
-      colors: [
-        'rgba(255, 99, 132, 0.5)', // Red
-        'rgba(54, 162, 235, 0.5)', // Blue
-        'rgba(255, 206, 86, 0.5)', // Yellow
-        'rgba(75, 192, 192, 0.5)', // Green
-        'rgba(153, 102, 255, 0.5)', // Purple
-        'rgba(255, 159, 64, 0.5)', // Orange
-      ],
+      objectives: ['brand awareness', 'engagement', 'video views', 'lead generation'],
+      metrics: ['cpr', 'cpc', 'cpm', 'cpv'],
+      cpuData: [],
+      metricColors: {
+        'cpr': 'rgba(75, 192, 192, 0.5)',
+        'cpc': 'rgba(255, 99, 132, 0.5)',
+        'cpm': 'rgba(54, 162, 235, 0.5)',
+        'cpv': 'rgba(153, 102, 255, 0.5)'
+      },
     };
   },
   methods: {
-    // Fetch data from the API endpoint using fetch
     async fetchData() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/clients/1289/campaigns/stats/cpu-per-objective');
+        const response = await fetch('http://127.0.0.1:8000/api/clients/1289/metrics/cpu?group-by=objective');
+        
+        // Check if the response is OK (status 200)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
 
-        this.labels = Object.keys(data);
-        this.data = this.labels.map(label => data[label].mean_cpu);
+        this.cpuData = this.objectives.map(objective => {
+          const objectiveData = data[objective] || {};
 
-        // Initialize the chart once the data is fetched
+          return this.metrics.map(metric => {
+            return objectiveData[metric] ? objectiveData[metric].mean : 0;
+          });
+        });
+
         this.initChart();
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -43,35 +51,38 @@ export default {
     initChart() {
       const ctx = this.$refs.barChartCanvas.getContext('2d');
 
-      const backgroundColors = this.colors.slice(0, this.labels.length);
+      const datasets = this.metrics.map((metric, index) => ({
+        label: metric.toUpperCase(),
+        data: this.cpuData.map(data => data[index]),
+        backgroundColor: this.metricColors[metric],
+        borderColor: this.metricColors[metric].replace('0.5', '1'),
+        borderWidth: 1,
+      }));
 
       this.chart = new window.Chart(ctx, {
         type: 'bar',
         data: {
-          labels: this.labels,
-          datasets: [
-            {
-              label: 'CPU Usage (Mean)',
-              data: this.data,
-              backgroundColor: backgroundColors,
-              borderColor: backgroundColors.map(color => color.replace('0.5', '1')),
-              borderWidth: 1,
-            },
-          ],
+          labels: this.objectives.map(objective => objective.charAt(0).toUpperCase() + objective.slice(1)),
+          datasets: datasets,
         },
         options: {
-          indexAxis: 'y',
           responsive: true,
+          indexAxis: 'y',
           plugins: {
             legend: {
-              display: false,
+              position: 'top',
             },
           },
           scales: {
             x: {
               beginAtZero: true,
             },
+            y: {
+              stacked: false,
+            },
           },
+          barPercentage: 2.0,
+          categoryPercentage: 0.5,
         },
       });
     },
