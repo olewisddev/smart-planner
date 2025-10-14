@@ -23,10 +23,12 @@ import InsightsPanel from './components/InsightsPanel.vue';
 <style>
 html {
   font-size: 12px;
+  font-family: Rubik, sans-serif;
 }
 
 body {
   font-size: 1rem;
+  font-family: "Rubik", sans-serif;
   background-color: #005A9C;
 }
 
