@@ -28,3 +28,21 @@ docker run -p 8000:8000 -p 5000:5000 <container-name>
 ```
 
 App is accessible from `http://localhost:5000/`.
+
+
+## Scope
+
+Features covered:
+
+- Table with filtering (by platform and by objective)
+- Chart for CPU (grouped by platform and insight)
+- Chart for cost composition
+- Upload CSV of campaigns
+- Insights per platform and per objective
+- Insights of cost composition
+
+Assumptions:
+
+- No pagination for table
+- No support for multiple clients
+- Uses in-memory database
